@@ -1,4 +1,8 @@
 import unittest
+import sys, os.path  
+src_path = (os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) + '/src/')
+sys.path.append(src_path)
+
 from game import TicTacToe
 from consts import BOARD_DIMENSION
 from model import Cell, Move
