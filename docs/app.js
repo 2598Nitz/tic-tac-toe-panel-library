@@ -47,16 +47,12 @@ from panel.io.pyodide import init_doc, write_doc
 
 init_doc()
 
-import random
 import panel as pn
 import param
+import random
 import time
-from enum import Enum
 
-BOARD_DIMENSION = 3
-GRID_SIZE = 300
-GRID_BUTTON_SIZE = 80
-COMPUTER_DELAY_SEC = 0.5
+from enum import Enum
 
 class Move(Enum):
     EMPTY = ' '
@@ -66,6 +62,11 @@ class Move(Enum):
 class Cell(param.Parameterized):
     winning_cell = param.Boolean(default=False)
     move = param.ClassSelector(class_=Move, default=Move.EMPTY)
+
+BOARD_DIMENSION = 3
+GRID_SIZE = 300
+GRID_BUTTON_SIZE = 100
+COMPUTER_DELAY_SEC = 0.5
 
 class TicTacToe(param.Parameterized):
     """Represents a Tic Tac Toe game board.
@@ -160,7 +161,7 @@ class TicTacToe(param.Parameterized):
 
     def __check_end_condition_by_moves(self, move1: Move, move2: Move, move3: Move):
         return move1 == move2 and move2 == move3 and move1 is not Move.EMPTY
-
+    
 class ViewRenderer(TicTacToe):
     """
     A class used to separate panel rendering from game logic
@@ -203,11 +204,11 @@ class ViewRenderer(TicTacToe):
         """                
         if self.game_ended:
             if self.winner is not Move.EMPTY:
-                return f"Winner is {self.winner.value}"
+                return f"# Winner is Player {self.winner.value}"
             else:
-                return 'Game ended as a draw'
+                return '# Game ended as a draw'
         else:
-            return f"Player {self.current_move.value}'s turn"
+            return f"# Player {self.current_move.value}'s turn"
 
     @param.depends('current_move')
     def board_view(self):
@@ -232,10 +233,15 @@ class ViewRenderer(TicTacToe):
                     width=GRID_BUTTON_SIZE, height=GRID_BUTTON_SIZE, button_type=button_type)
                 button.param.watch(make_move_closure, 'clicks')
                 grid[i, j] = button
+                grid[i, j].margin = 0
+        grid.margin = (0, 0, 20, 0) #left aligned
         return grid
 
 viewObj = ViewRenderer()
-pn.Column(viewObj.game_message, viewObj.board_view, pn.panel(viewObj.param, parameters=['reset_button'], name='')).servable()
+resetButton = pn.widgets.Button(name='Reset Game', button_type='danger', width = GRID_SIZE)
+resetButton.margin = 0 #left aligned
+resetButtonParam = pn.Param(viewObj.param, parameters=['reset_button'], name='', widgets = {'reset_button': resetButton})
+pn.Column(viewObj.game_message, viewObj.board_view, resetButton).servable()
 
 await write_doc()
   `
