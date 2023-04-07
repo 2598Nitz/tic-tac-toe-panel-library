@@ -46,11 +46,11 @@ class ViewRenderer(TicTacToe):
         """                
         if self.game_ended:
             if self.winner is not Move.EMPTY:
-                return f"Winner is {self.winner.value}"
+                return f"# Winner is Player {self.winner.value}"
             else:
-                return 'Game ended as a draw'
+                return '# Game ended as a draw'
         else:
-            return f"Player {self.current_move.value}'s turn"
+            return f"# Player {self.current_move.value}'s turn"
 
     @param.depends('current_move')
     def board_view(self):
@@ -75,4 +75,6 @@ class ViewRenderer(TicTacToe):
                     width=GRID_BUTTON_SIZE, height=GRID_BUTTON_SIZE, button_type=button_type)
                 button.param.watch(make_move_closure, 'clicks')
                 grid[i, j] = button
+                grid[i, j].margin = 0
+        grid.margin = (0, 0, 20, 0) #left aligned
         return grid

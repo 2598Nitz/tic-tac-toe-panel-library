@@ -10,5 +10,6 @@ To run the app locally:
 
 Some screenshots of the application:
 
-<img width="301" alt="Screenshot 2023-04-07 103245" src="https://user-images.githubusercontent.com/35998771/230558987-33a1208a-9596-461a-8381-b24a51e965fc.png">
-<img width="323" alt="Screenshot 2023-04-07 103337" src="https://user-images.githubusercontent.com/35998771/230559005-b7772d72-ff50-4841-bcc5-5fda7453740e.png">
+<img width="311" alt="image" src="https://user-images.githubusercontent.com/35998771/230630447-a90e7a6f-40d3-46df-8ebb-5424012ec3a6.png">
+<img width="317" alt="image" src="https://user-images.githubusercontent.com/35998771/230630557-b81d534c-1308-497e-85dc-71709ce4501e.png">
+

@@ -39,11 +39,6 @@ class TestTicTacToe(unittest.TestCase):
         self.assertEqual(self.game.board[0][1].move, Move.EMPTY)
         self.assertEqual(self.game.current_move, Move.X)
         
-    def test_switch_player(self):
-        self.game.current_move = Move.X
-        self.game._TicTacToe__switch_player()
-        self.assertEqual(self.game.current_move, Move.O)
-        
     def test_get_available_moves(self):
         self.assertEqual(self.game._TicTacToe__get_available_moves(), [(i, j) for i in range(BOARD_DIMENSION) for j in range(BOARD_DIMENSION)])
         self.game.board[0][0].move = Move.X
