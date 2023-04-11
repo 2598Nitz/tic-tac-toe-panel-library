@@ -3,7 +3,10 @@ from view import ViewRenderer
 from consts import GRID_SIZE
 
 viewObj = ViewRenderer()
-resetButton = pn.widgets.Button(name='Reset Game', button_type='danger', width = GRID_SIZE)
-resetButton.margin = 0 #left aligned
-resetButtonParam = pn.Param(viewObj.param, parameters=['reset_button'], name='', widgets = {'reset_button': resetButton})
-pn.Column(viewObj.game_message, viewObj.board_view, resetButton).servable()
+resetButton = pn.widgets.Button(name='Reset Game', button_type='danger')
+sideViewParam = pn.Param(viewObj.param, parameters=['user_move_marker','difficulty','reset_button'], name='CONFIGURE GAME', widgets = {'reset_button': resetButton})
+
+bootstrap = pn.template.BootstrapTemplate(title='TIC TAC TOE')
+bootstrap.sidebar.append(pn.Card(sideViewParam))
+bootstrap.main.append(pn.Column(viewObj.game_message, viewObj.board_view))
+bootstrap.servable()
