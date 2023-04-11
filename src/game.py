@@ -65,8 +65,8 @@ class TicTacToe(param.Parameterized):
         if gameState[0] == GameStatus.WIN:
             for (row,col) in gameState[2]:
                 self.board.set_cell(row, col, gameState[1], True)
-            self.game_ended = True
             self.winner = gameState[1]
+            self.game_ended = True
         elif gameState[0] == GameStatus.DRAW:
             self.game_ended = True
 

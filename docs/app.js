@@ -49,10 +49,11 @@ init_doc()
 
 import param
 import panel as pn
-from enum import Enum
 import random
 import math
 import time
+
+from enum import Enum
 
 BOARD_DIMENSION = 3
 GRID_SIZE = 300
@@ -329,8 +330,8 @@ class TicTacToe(param.Parameterized):
         if gameState[0] == GameStatus.WIN:
             for (row,col) in gameState[2]:
                 self.board.set_cell(row, col, gameState[1], True)
-            self.game_ended = True
             self.winner = gameState[1]
+            self.game_ended = True
         elif gameState[0] == GameStatus.DRAW:
             self.game_ended = True
 
@@ -422,7 +423,7 @@ class ViewRenderer(TicTacToe):
                 grid[i, j].margin = 0
 
         return grid
-
+    
 viewObj = ViewRenderer()
 resetButton = pn.widgets.Button(name='Reset Game', button_type='danger')
 sideViewParam = pn.Param(viewObj.param, parameters=['user_move_marker','difficulty','reset_button'], name='CONFIGURE GAME', widgets = {'reset_button': resetButton})
