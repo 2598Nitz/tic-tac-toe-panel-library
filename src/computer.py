@@ -41,7 +41,7 @@ class IntermediateComputer(ComputerInterface):
     def get_move(self, board: Board, computerMarker: Move):
         time.sleep(COMPUTER_DELAY_SEC)
         available_moves = board.get_available_moves()
-        make_mistake = random.random() <= self.mistake_probability
+        make_mistake = random.random() < self.mistake_probability
         best_move = get_best_move(board.get_available_moves(), board, computerMarker)
         if make_mistake:
             self.mistake_probability = 0
@@ -82,6 +82,8 @@ def get_random_next_move(available_moves):
     return random.choice(available_moves)
 
 def get_non_best_move(available_moves, best_move):
+    if len(available_moves) == 1:
+        return best_move
     non_best_moves = list(filter(lambda move: move != best_move, available_moves))
     return random.choice(non_best_moves)
 
