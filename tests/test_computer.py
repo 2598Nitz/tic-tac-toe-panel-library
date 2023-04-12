@@ -28,6 +28,16 @@ class TestComputer(unittest.TestCase):
         non_best_move = get_non_best_move(available_moves, best_move)
         self.assertEqual(non_best_move, (0,1))
 
+    def test_get_non_best_move_when_single_move_available(self):
+        board_grid = [[Cell(move=Move.X), Cell(move=Move.X), Cell(move=Move.O)],
+                           [Cell(move=Move.O), Cell(move=Move.X), Cell(move=Move.O)],
+                           [Cell(move=Move.X), Cell(move=Move.O), Cell(move=Move.EMPTY)]] 
+        board = Board(board_grid)
+        available_moves = [(2,2)]
+        best_move = get_best_move(available_moves, board, Move.O)
+        non_best_move = get_non_best_move(available_moves, best_move)
+        self.assertEqual(non_best_move, (2,2))        
+
     def test_random_move(self):
         board = Board()
         board.set_cell(0,0,Move.X)
