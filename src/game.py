@@ -1,22 +1,12 @@
 import param
 from model import Move,Difficulty,GameStatus
-from computer import *
+from computer.computer import ComputerInterface, BeginnerComputer, ComputerFactory
 from board import Board
 
 class TicTacToe(param.Parameterized):
     """
     Represents Tic Tac Toe game controller.
-    This class provides methods to make moves on the board, reset game state.
-
-    Attributes:
-        first_mover (Move): Player who will make first move.
-        current_move (Move): The move of the current player (either Move.X or Move.O).
-        user_move_marker (Move): Move Marker selected by user.
-        game_ended (bool): A flag indicating if the game has ended.
-        winner (Move): The move of the winning player (either Move.X or Move.O), or Move.EMPTY if there is no winner yet.
-        board (Board): Object having board 2D grid, provides methods to update game board and also provides game status.
-        difficulty (Difficulty): Difficulty level selected by user.
-        computer (ComputerInterface): ComputerInterface implementation object providing next move by computer. 
+    This class provides methods to make moves on the board, reset game state. 
 
     Methods:
         reset_game_state(): Resets the board and game state to their initial values.
@@ -27,18 +17,22 @@ class TicTacToe(param.Parameterized):
         __switch_first_mover(): On every game reset, first mover is switched to add fairness to the game.
         __get_computer_move_marker(): Gives current move marker assigned to computer.
     """
-    first_mover = param.Selector(objects=[Move.X, Move.O], default=Move.X)    
-    current_move = param.Selector(objects=[Move.X, Move.O], default=Move.X)
-    user_move_marker = param.Selector(objects=[Move.X, Move.O], default=Move.X)
-    game_ended = param.Boolean(default=False)
-    winner = param.Selector(objects=[Move.X, Move.O, Move.EMPTY], default=Move.EMPTY)
-    board: Board = param.Parameter(Board(), instantiate=True)
-    difficulty = param.ObjectSelector(default=Difficulty.EASY, objects=[Difficulty.EASY, Difficulty.INTERMEDIATE, Difficulty.PRO])
-    computer: ComputerInterface = param.Parameter(BeginnerComputer(), instantiate=True)
+    first_mover = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='Player who will make first move')    
+    current_move = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='The move of the current player')
+    user_move_marker = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='Move Marker selected by user')
+    game_ended = param.Boolean(default=False, doc='A flag indicating if the game has ended')
+    winner = param.Selector(objects=[Move.X, Move.O, Move.EMPTY], default=Move.EMPTY, doc='The move of the winning player \
+                            (either Move.X or Move.O), or Move.EMPTY if there is no winner yet')
+    board = param.ClassSelector(class_=Board, default=Board(), instantiate=True, doc='Object having board 2D grid, provides \
+                                 methods to update game board and also provides game status')
+    difficulty = param.Selector(default=Difficulty.EASY, objects=[Difficulty.EASY, Difficulty.INTERMEDIATE, Difficulty.PRO], \
+                                doc='Difficulty level selected by user')
+    computer = param.ClassSelector(class_=ComputerInterface, default=BeginnerComputer(), instantiate=True, \
+                                   doc='ComputerInterface implementation object providing next move by computer')
 
     def reset_game_state(self):
         self.board.reset_board()
-        self.computer = get_computer_by_difficulty(self.difficulty)
+        self.computer = ComputerFactory.get_computer_by_difficulty(self.difficulty)
         self.__switch_first_mover()
         self.current_move = self.first_mover
         self.game_ended = False

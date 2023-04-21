@@ -8,15 +8,13 @@ class ViewRenderer(TicTacToe):
     """
     A class used to separate panel rendering from game logic
 
-    Attributes:
-        reset_button: Gets mapped to Button widget. Used to call reset game state in TicTacToe class
-
     Methods:
         reset_game_state(): Forwards request to parent game controller class to reset game state.
         game_message(): Returns the game message according to the current state of the game.
         board_view(): Returns a Panel grid representing the current state of the game board.
     """
-    reset_button = param.Action(lambda x: x.param.trigger('reset_button'), label='Reset Game')
+    reset_button = param.Action(lambda x: x.param.trigger('reset_button'), label='Reset Game', \
+                                doc='Gets mapped to Button widget. Used to call reset game state in TicTacToe class')
 
     @param.depends('reset_button','difficulty','user_move_marker', watch=True)
     def reset_game_state(self):
@@ -41,16 +39,16 @@ class ViewRenderer(TicTacToe):
         if self.game_ended:
             if self.winner is not Move.EMPTY:
                 if self.winner == self.user_move_marker:
-                    markdown = pn.pane.Markdown(f"## You won !", width=GAME_MESSAGE_WIDTH)
+                    markdown = pn.pane.Markdown("## You won !", width=GAME_MESSAGE_WIDTH)
                 else:
-                    markdown = pn.pane.Markdown(f"## Computer won :(", width=GAME_MESSAGE_WIDTH)
+                    markdown = pn.pane.Markdown("## Computer won :(", width=GAME_MESSAGE_WIDTH)
             else:
                 markdown = pn.pane.Markdown('## Game ended as a draw', width=GAME_MESSAGE_WIDTH)
         else:
             if self.current_move == self.user_move_marker:
-                markdown = pn.pane.Markdown(f"## Your turn", width=GAME_MESSAGE_WIDTH)
+                markdown = pn.pane.Markdown("## Your turn", width=GAME_MESSAGE_WIDTH)
             else:
-                markdown = pn.pane.Markdown(f"## Computer's turn", width=GAME_MESSAGE_WIDTH)
+                markdown = pn.pane.Markdown("## Computer's turn", width=GAME_MESSAGE_WIDTH)
         return markdown
 
     @param.depends('current_move','game_ended')

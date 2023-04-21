@@ -6,7 +6,7 @@ class Board:
     The Board class represents the game board of TicTacToe.
 
     Attributes:
-        board_grid (list[list[Cell]]): A 2D list of Cell representing the current state of the board.
+        __board_grid (list[list[Cell]]): A 2D list of Cell representing the current state of the board.
     
     Methods:
         __init__(board_grid=None): Initializes a new Board object with a given board grid.
@@ -20,18 +20,18 @@ class Board:
 
     def __init__(self, board_grid=None):
         if board_grid:
-            self.board_grid = [[Cell(move=board_grid[row][col].move) for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
+            self.__board_grid = [[Cell(move=board_grid[row][col].move) for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
         else:  
-            self.board_grid = [[Cell() for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
+            self.__board_grid = [[Cell() for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
 
     def reset_board(self):
-        self.board_grid = [[Cell() for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
+        self.__board_grid = [[Cell() for col in range(BOARD_DIMENSION)] for row in range(BOARD_DIMENSION)]
 
     def get_available_moves(self):
         available_moves = []
         for row in range(BOARD_DIMENSION):
             for col in range(BOARD_DIMENSION):
-                if self.board_grid[row][col].move is Move.EMPTY:
+                if self.__board_grid[row][col].move is Move.EMPTY:
                     available_moves.append((row, col))
         return available_moves
     
@@ -43,17 +43,17 @@ class Board:
 
         # Check rows
         for row in range(BOARD_DIMENSION):
-            if self.__check_end_condition_by_moves(self.board_grid[row][0].move, self.board_grid[row][1].move, self.board_grid[row][2].move):
-                return (GameStatus.WIN, self.board_grid[row][0].move, ((row,0), (row,1), (row,2),))
+            if self.__check_end_condition_by_moves(self.__board_grid[row][0].move, self.__board_grid[row][1].move, self.__board_grid[row][2].move):
+                return (GameStatus.WIN, self.__board_grid[row][0].move, ((row,0), (row,1), (row,2),))
         # Check columns
         for col in range(BOARD_DIMENSION):
-            if self.__check_end_condition_by_moves(self.board_grid[0][col].move, self.board_grid[1][col].move, self.board_grid[2][col].move):
-                return (GameStatus.WIN, self.board_grid[0][col].move, ((0,col), (1,col), (2,col),))
+            if self.__check_end_condition_by_moves(self.__board_grid[0][col].move, self.__board_grid[1][col].move, self.__board_grid[2][col].move):
+                return (GameStatus.WIN, self.__board_grid[0][col].move, ((0,col), (1,col), (2,col),))
         # Check diagonals
-        if self.__check_end_condition_by_moves(self.board_grid[0][0].move, self.board_grid[1][1].move, self.board_grid[2][2].move):
-            return (GameStatus.WIN, self.board_grid[0][0].move, ((0,0), (1,1), (2,2),))
-        if self.__check_end_condition_by_moves(self.board_grid[0][2].move, self.board_grid[1][1].move, self.board_grid[2][0].move):
-            return (GameStatus.WIN, self.board_grid[0][2].move, ((0,2), (1,1), (2,0),))
+        if self.__check_end_condition_by_moves(self.__board_grid[0][0].move, self.__board_grid[1][1].move, self.__board_grid[2][2].move):
+            return (GameStatus.WIN, self.__board_grid[0][0].move, ((0,0), (1,1), (2,2),))
+        if self.__check_end_condition_by_moves(self.__board_grid[0][2].move, self.__board_grid[1][1].move, self.__board_grid[2][0].move):
+            return (GameStatus.WIN, self.__board_grid[0][2].move, ((0,2), (1,1), (2,0),))
         # Game Draw
         if not self.get_available_moves():
             return (GameStatus.DRAW,)
@@ -63,11 +63,11 @@ class Board:
         return move1 == move2 and move2 == move3 and move1 is not Move.EMPTY
     
     def get_board_grid(self):
-        return self.board_grid
+        return self.__board_grid
     
     def get_cell(self, row, col):
-        return self.board_grid[row][col]
+        return self.__board_grid[row][col]
     
     def set_cell(self, row, col, move, winning_cell = False):
-        self.board_grid[row][col].move = move
-        self.board_grid[row][col].winning_cell = winning_cell
+        self.__board_grid[row][col].move = move
+        self.__board_grid[row][col].winning_cell = winning_cell

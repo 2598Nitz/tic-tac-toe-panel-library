@@ -5,7 +5,8 @@ sys.path.append(src_path)
 
 from model import Cell,Move
 from board import Board
-from computer import get_best_move, get_non_best_move, BeginnerComputer
+from computer.utils import get_best_move, get_non_best_move
+from computer.computer import BeginnerComputer
 
 class TestComputer(unittest.TestCase):
 

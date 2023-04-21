@@ -1,6 +1,5 @@
 import panel as pn
 from view import ViewRenderer
-from consts import GRID_SIZE
 
 viewObj = ViewRenderer()
 resetButton = pn.widgets.Button(name='Reset Game', button_type='danger')
