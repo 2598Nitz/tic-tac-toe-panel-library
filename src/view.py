@@ -4,7 +4,7 @@ from model import Move
 from consts import BOARD_DIMENSION,GRID_SIZE,GRID_BUTTON_SIZE,GAME_MESSAGE_WIDTH
 import panel as pn
 
-class ViewRenderer(TicTacToe):
+class ViewRenderer(param.Parameterized):
     """
     A class used to separate panel rendering from game logic
 
@@ -15,16 +15,33 @@ class ViewRenderer(TicTacToe):
     """
     reset_button = param.Action(lambda x: x.param.trigger('reset_button'), label='Reset Game', \
                                 doc='Gets mapped to Button widget. Used to call reset game state in TicTacToe class')
+    game = param.ClassSelector(class_=TicTacToe, default=TicTacToe(), precedence=-1, doc='Game logic containing object')
 
-    @param.depends('reset_button','difficulty','user_move_marker', watch=True)
+    def __init__(self, **params):
+        '''
+        Initialize GridSpec with button widgets for Tic Tac Toe board.
+        Button widget are being listened for clicks and game state is updated on click.
+        '''
+        super(ViewRenderer, self).__init__(**params)
+        self.grid = pn.GridSpec(width=GRID_SIZE, height=GRID_SIZE)
+        for i in range(BOARD_DIMENSION):
+            for j in range(BOARD_DIMENSION):
+                def make_move_closure(event, row=i, col=j):
+                    self.game.make_move(row, col) 
+                button = pn.widgets.Button(name=Move.EMPTY.value, width=GRID_BUTTON_SIZE, height=GRID_BUTTON_SIZE)
+                button.param.watch(make_move_closure, 'clicks')
+                self.grid[i, j] = button
+                self.grid[i, j].margin = 0  
+
+    @param.depends('reset_button','game.difficulty','game.user_move_marker', watch=True)
     def reset_game_state(self):
         '''
         Invoked when reset_button clicked or difficulty level changed or user switches their move marker. 
         Forwards request to parent class to reset game state.
         '''
-        super().reset_game_state()
+        self.game.reset_game_state()
 
-    @param.depends('current_move','game_ended','winner')
+    @param.depends('game.current_move','game.game_ended','game.winner')
     def game_message(self):
         """
         Returns the game message according to the current state of the game. If the game has ended,
@@ -36,44 +53,35 @@ class ViewRenderer(TicTacToe):
             Markdown representing the current game state message.
         """
         markdown =  pn.pane.Markdown(" ", width=GAME_MESSAGE_WIDTH)               
-        if self.game_ended:
-            if self.winner is not Move.EMPTY:
-                if self.winner == self.user_move_marker:
-                    markdown = pn.pane.Markdown("## You won !", width=GAME_MESSAGE_WIDTH)
+        if self.game.game_ended:
+            if self.game.winner is not Move.EMPTY:
+                if self.game.winner == self.game.user_move_marker:
+                    markdown.object = "## You won !"
                 else:
-                    markdown = pn.pane.Markdown("## Computer won :(", width=GAME_MESSAGE_WIDTH)
+                    markdown.object = "## Computer won :("
             else:
-                markdown = pn.pane.Markdown('## Game ended as a draw', width=GAME_MESSAGE_WIDTH)
+                markdown.object = '## Game ended as a draw'
         else:
-            if self.current_move == self.user_move_marker:
-                markdown = pn.pane.Markdown("## Your turn", width=GAME_MESSAGE_WIDTH)
+            if self.game.current_move == self.game.user_move_marker:
+                markdown.object = "## Your turn"
             else:
-                markdown = pn.pane.Markdown("## Computer's turn", width=GAME_MESSAGE_WIDTH)
+                markdown.object = "## Computer's turn"
         return markdown
 
-    @param.depends('current_move','game_ended')
+    @param.depends('game.current_move','game.game_ended')
     def board_view(self):
         """
         Returns a Panel grid representing the current state of the game board.
         
-        This method uses the current state of the game board to generate a Panel grid
-        representing the positions and values of the game buttons. Each button is associated
-        with a closure that is triggered when the button is clicked, and updates the game
-        state accordingly.
+        This method uses the current state of the game board to update Panel grid
+        representing the positions and values of the game buttons. 
         
         Returns:
             A Panel GridSpec object representing the current state of the game board.
         """
-        grid = pn.GridSpec(width=GRID_SIZE, height=GRID_SIZE)
+
         for i in range(BOARD_DIMENSION):
             for j in range(BOARD_DIMENSION):
-                def make_move_closure(event, row=i, col=j):
-                    self.make_move(row, col)
-                button_type = 'success' if self.board.get_cell(i,j).winning_cell else 'default'   
-                button = pn.widgets.Button(name=self.board.get_cell(i,j).move.value, \
-                    width=GRID_BUTTON_SIZE, height=GRID_BUTTON_SIZE, button_type=button_type)
-                button.param.watch(make_move_closure, 'clicks')
-                grid[i, j] = button
-                grid[i, j].margin = 0
-
-        return grid
+                self.grid[i, j].name = self.game.board.get_cell(i,j).move.value
+                self.grid[i, j].button_type = 'success' if self.game.board.get_cell(i,j).winning_cell else 'default'
+        return self.grid    

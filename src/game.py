@@ -17,18 +17,18 @@ class TicTacToe(param.Parameterized):
         __switch_first_mover(): On every game reset, first mover is switched to add fairness to the game.
         __get_computer_move_marker(): Gives current move marker assigned to computer.
     """
-    first_mover = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='Player who will make first move')    
-    current_move = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='The move of the current player')
+    first_mover = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='Player who will make first move', precedence=-1)    
+    current_move = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='The move of the current player', precedence=-1)
     user_move_marker = param.Selector(objects=[Move.X, Move.O], default=Move.X, doc='Move Marker selected by user')
-    game_ended = param.Boolean(default=False, doc='A flag indicating if the game has ended')
+    game_ended = param.Boolean(default=False, doc='A flag indicating if the game has ended', precedence=-1)
     winner = param.Selector(objects=[Move.X, Move.O, Move.EMPTY], default=Move.EMPTY, doc='The move of the winning player \
-                            (either Move.X or Move.O), or Move.EMPTY if there is no winner yet')
+                            (either Move.X or Move.O), or Move.EMPTY if there is no winner yet', precedence=-1)
     board = param.ClassSelector(class_=Board, default=Board(), instantiate=True, doc='Object having board 2D grid, provides \
-                                 methods to update game board and also provides game status')
+                                 methods to update game board and also provides game status', precedence=-1)
     difficulty = param.Selector(default=Difficulty.EASY, objects=[Difficulty.EASY, Difficulty.INTERMEDIATE, Difficulty.PRO], \
                                 doc='Difficulty level selected by user')
     computer = param.ClassSelector(class_=ComputerInterface, default=BeginnerComputer(), instantiate=True, \
-                                   doc='ComputerInterface implementation object providing next move by computer')
+                                   doc='ComputerInterface implementation object providing next move by computer', precedence=-1)
 
     def reset_game_state(self):
         self.board.reset_board()
